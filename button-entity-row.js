@@ -18,7 +18,7 @@ class ButtonEntityRow extends Polymer.Element {
      font-weight: 500;
      margin-right: -.57em;
  }
- iron-icon {
+ ha-icon {
 	 padding-right: 5px;
  }
  .icon-default {
@@ -42,7 +42,10 @@ class ButtonEntityRow extends Polymer.Element {
         <template is="dom-repeat" items="[[row]]">
             <paper-button on-click="handleButton">
                 <template is="dom-if" if="{{item.icon}}">
-                    <iron-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]"><iron-icon>
+                    <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]"><ha-icon>
+                </template>
+                <template is="dom-else">
+                    <ha-state-icon state="[[item.state]]""><ha-state-icon>
                 </template>
                 {{item.name}}
             </paper-button>
@@ -122,11 +125,10 @@ class ButtonEntityRow extends Polymer.Element {
       }
 
       if (!button.service) throw new Error("service required")
+      if (!button.service_data) button.service_data = {}
       if (!button.name) throw new Error("name required")
       return button
     }))
-
-    console.log(this.buttons)
 
     
   }
@@ -135,22 +137,20 @@ class ButtonEntityRow extends Polymer.Element {
     this._hass = hass;
 
     this.buttons = this.buttons.map(row => row.map(button => {
+      const state = hass.states[button.service_data.entity_id]
+      if (state) {
+        button.state = state
+      }
       if (button.name) return button
       if (button.icon) return button
-      const state = hass.states[button.service_data.entity_id]
-      if (state && state.attributes && state.attributes.icon) {
-        button.icon = state.attributes.icon
-        return button
-      }
+
       if (state && state.attributes && state.attributes.friendly_name) {
         button.name = state.attributes.friendly_name
         return button
       }
-      button.icon = 'mdi:power'
       return button
     }))
 
-    console.log(hass)
   }
 
   handleButton(evt) {
