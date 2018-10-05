@@ -11,7 +11,7 @@ class ButtonEntityRow extends Polymer.Element {
  }
  .flex-box {
      display: flex;
-     justify-content: space-between;
+     justify-content: space-evenly;
  }
  paper-button {
      color: var(--primary-color);
