@@ -31,6 +31,7 @@ class ButtonEntityRow extends Polymer.Element {
      color: var(--primary-color);
      font-weight: 500;
      margin-right: -.57em;
+     cursor: pointer;
  }
  ha-icon {
 	 padding-right: 5px;
