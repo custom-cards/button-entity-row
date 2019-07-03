@@ -149,7 +149,7 @@ class ButtonEntityRow extends Polymer.Element {
 
       if (!button.service) throw new Error("service required")
       if (!button.service_data) button.service_data = {}
-      if (!button.name) throw new Error("name required")
+      if (!button.name && !button.icon) throw new Error("name or icon required")
       return button
     }))
 
