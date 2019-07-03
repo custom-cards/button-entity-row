@@ -13,27 +13,14 @@ class ButtonEntityRow extends Polymer.Element {
      display: flex;
      justify-content: space-between;
  }
- .flex-box paper-button:last-of-type {
-     padding-right: 1.75em;
-     min-width: 0px;
- }
-
- .flex-box paper-button:last-of-type ha-icon {
-     padding-right: 0;
- }
-
- .flex-box paper-button:first-of-type state-badge {
-     width: unset;
-     margin-right: 0.5em;
- }
-
  paper-button {
      color: var(--primary-color);
      font-weight: 500;
-     margin-right: -.57em;
- }
- ha-icon {
-	 padding-right: 5px;
+     cursor: pointer;
+     padding: 8px;
+     position: relative;
+     display: inline-flex;
+     align-items: center;
  }
  .icon-default {
 	 color: var(--primary-color);
@@ -56,12 +43,13 @@ class ButtonEntityRow extends Polymer.Element {
         <template is="dom-repeat" items="[[row]]">
             <paper-button on-click="handleButton">
                 <template is="dom-if" if="{{item.icon}}">
-                    <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]"><ha-icon>
+                    <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]" style="[[getPadding(item.name)]]"><ha-icon>
                 </template>
                 <template is="dom-else">
                     <ha-state-icon state="[[item.state]]""><ha-state-icon>
                 </template>
                 {{item.name}}
+                <paper-ripple center class$="[[getRippleStyle(item.name)]]"></paper-ripple>
             </paper-button>
         </template>
 </template>
@@ -81,6 +69,14 @@ class ButtonEntityRow extends Polymer.Element {
   getClass(color) {
     if (!color) return 'icon-default'
     return `icon-${color}`
+  }
+
+  getPadding(name) {
+    return name ? 'padding-right: 5px;' : '';
+  }
+
+  getRippleStyle(name) {
+    return name ? '' : 'circle';
   }
 
   makeButtonFromEntity(entity) {
