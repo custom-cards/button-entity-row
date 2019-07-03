@@ -41,7 +41,7 @@ class ButtonEntityRow extends Polymer.Element {
 <template is="dom-repeat" items="[[buttons]]" as="row">
     <div class="flex-box">
         <template is="dom-repeat" items="[[row]]">
-            <paper-button on-click="handleButton">
+            <paper-button on-click="handleButton" style="[[getStyle(item.style)]]">
                 <template is="dom-if" if="{{item.icon}}">
                     <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]" style="[[getPadding(item.name)]]"><ha-icon>
                 </template>
@@ -69,6 +69,18 @@ class ButtonEntityRow extends Polymer.Element {
   getClass(color) {
     if (!color) return 'icon-default'
     return `icon-${color}`
+  }
+
+  getStyle(styles) {
+    var style = "";
+    for (let index in styles) {
+      if (styles.hasOwnProperty(index)) {
+        for (let s in styles[index]) {
+          style += `${s}: ${styles[index][s]};`;
+        }
+      }
+    }
+    return style;
   }
 
   getPadding(name) {
@@ -130,6 +142,7 @@ class ButtonEntityRow extends Polymer.Element {
           ...this.makeButtonFromEntity(button.entity),
           icon: button.icon,
           icon_color: button.icon_color,
+          style: button.style,
           name: button.name
         }
       }
