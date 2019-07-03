@@ -11,7 +11,7 @@ class ButtonEntityRow extends Polymer.Element {
  }
  .flex-box {
      display: flex;
-     justify-content: space-between;
+     justify-content: space-evenly;
  }
  paper-button {
      color: var(--primary-color);
@@ -67,8 +67,7 @@ class ButtonEntityRow extends Polymer.Element {
   }
 
   getClass(color) {
-    if (!color) return 'icon-default'
-    return `icon-${color}`
+    return color ? `icon-${color}` : '';
   }
 
   getStyle(styles) {
