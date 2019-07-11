@@ -11,29 +11,16 @@ class ButtonEntityRow extends Polymer.Element {
  }
  .flex-box {
      display: flex;
-     justify-content: space-between;
+     justify-content: space-evenly;
  }
- .flex-box paper-button:last-of-type {
-     padding-right: 1.75em;
-     min-width: 0px;
- }
-
- .flex-box paper-button:last-of-type ha-icon {
-     padding-right: 0;
- }
-
- .flex-box paper-button:first-of-type state-badge {
-     width: unset;
-     margin-right: 0.5em;
- }
-
  paper-button {
      color: var(--primary-color);
      font-weight: 500;
-     margin-right: -.57em;
- }
- ha-icon {
-	 padding-right: 5px;
+     cursor: pointer;
+     padding: 8px;
+     position: relative;
+     display: inline-flex;
+     align-items: center;
  }
  .icon-default {
 	 color: var(--primary-color);
@@ -54,14 +41,15 @@ class ButtonEntityRow extends Polymer.Element {
 <template is="dom-repeat" items="[[buttons]]" as="row">
     <div class="flex-box">
         <template is="dom-repeat" items="[[row]]">
-            <paper-button on-click="handleButton">
+            <paper-button on-click="handleButton" style="[[getStyle(item.style)]]">
                 <template is="dom-if" if="{{item.icon}}">
-                    <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]"><ha-icon>
+                    <ha-icon icon="[[item.icon]]" class$="[[getClass(item.icon_color)]]" style="[[getPadding(item.name)]]"><ha-icon>
                 </template>
                 <template is="dom-else">
                     <ha-state-icon state="[[item.state]]""><ha-state-icon>
                 </template>
                 {{item.name}}
+                <paper-ripple center class$="[[getRippleStyle(item.name)]]"></paper-ripple>
             </paper-button>
         </template>
 </template>
@@ -79,8 +67,27 @@ class ButtonEntityRow extends Polymer.Element {
   }
 
   getClass(color) {
-    if (!color) return 'icon-default'
-    return `icon-${color}`
+    return color ? `icon-${color}` : '';
+  }
+
+  getStyle(styles) {
+    var style = "";
+    for (let index in styles) {
+      if (styles.hasOwnProperty(index)) {
+        for (let s in styles[index]) {
+          style += `${s}: ${styles[index][s]};`;
+        }
+      }
+    }
+    return style;
+  }
+
+  getPadding(name) {
+    return name ? 'padding-right: 5px;' : '';
+  }
+
+  getRippleStyle(name) {
+    return name ? '' : 'circle';
   }
 
   makeButtonFromEntity(entity) {
@@ -134,13 +141,14 @@ class ButtonEntityRow extends Polymer.Element {
           ...this.makeButtonFromEntity(button.entity),
           icon: button.icon,
           icon_color: button.icon_color,
+          style: button.style,
           name: button.name
         }
       }
 
       if (!button.service) throw new Error("service required")
       if (!button.service_data) button.service_data = {}
-      if (!button.name) throw new Error("name required")
+      if (!button.name && !button.icon) throw new Error("name or icon required")
       return button
     }))
 
