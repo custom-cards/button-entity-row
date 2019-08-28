@@ -25,7 +25,7 @@ Creates a row of buttons to be placed in an `entities` card.
 | state_icons  | `{[state: string]: string}` | **Optional** | Material icon for each specific state of the entity            |
 | style        | `object`                    | **Optional** | CSS styles to apply to the button.                             |
 | service      | `string`                    | **Optional** | The Home Assistant service to call when the button is clicked. |
-| service_data | `object`                    | **Optional** | Service data to be sent with the service call. TODO            |
+| service_data | `object`                    | **Optional** | Service data to be sent with the service call.                 |
 
 ## Usage
 
