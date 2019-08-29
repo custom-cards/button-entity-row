@@ -5,7 +5,7 @@ class ButtonEntityRow extends LitElement {
     return {
       hass: { type: Object },
       config: { type: Object },
-      buttons: { type: Array }
+      rows: { type: Array }
     }
   }
 
@@ -39,56 +39,80 @@ class ButtonEntityRow extends LitElement {
 
   render() {
     return html`
-      <div class="flex-box">
-        ${this.buttons.map(button => {
-          const state = this.hass.states[button.entityId] || {}
-          const icon = this.getCurrentIcon(button, state)
-          const name = button.name || (!icon && state.attributes ? state.attributes.friendly_name : null)
+      ${this.rows.map(row => {
+        return html`
+          <div class="flex-box">
+            ${row.map(button => {
+              const state = this.hass.states[button.entityId] || {}
+              const icon = this._getCurrentIcon(button, state)
+              const name = button.name || (!icon && state.attributes ? state.attributes.friendly_name : null)
 
-          return html`
-            <paper-button
-              @click="${() => this.handleButtonClick(button)}"
-              style="${this.getStyle(button.style)}"
-              class="${this.getClass(state.state)}"
-            >
-              ${icon &&
-                html`
-                  <ha-icon icon="${icon}" style="${name ? "padding-right: 5px;" : ""}"></ha-icon>
-                `}
-              ${name}
-              <paper-ripple center class="${name ? "" : "circle"}"></paper-ripple>
-            </paper-button>
-          `
-        })}
-      </div>
+              return html`
+                <paper-button
+                  @click="${() => this._handleButtonClick(button)}"
+                  style="${button.style}"
+                  class="${this._getCurrentClass(state.state)}"
+                >
+                  ${icon &&
+                    html`
+                      <ha-icon icon="${icon}" style="${name ? "padding-right: 5px;" : ""}"></ha-icon>
+                    `}
+                  ${name}
+                  <paper-ripple center class="${name ? "" : "circle"}"></paper-ripple>
+                </paper-button>
+              `
+            })}
+          </div>
+        `
+      })}
     `
   }
 
-  getCurrentIcon(button, state) {
-    let icon = button.icon
-    if (state.attributes) {
-      if (button.stateIcons && button.stateIcons[state.state]) {
-        icon = button.stateIcons[state.state]
-      }
-      if (!icon) {
-        icon = state.attributes.icon
-      }
+  setConfig(config) {
+    if (!config.buttons) throw new Error("missing buttons")
+    if (!Array.isArray(config.buttons)) throw new Error("buttons must be an array")
+    if (config.buttons.length <= 0) throw new Error("at least one button required")
+
+    if (!Array.isArray(config.buttons[0])) {
+      config.buttons = [config.buttons]
     }
-    return icon
+
+    this.config = config
+    this.rows = config.buttons.map(row =>
+      row.map(item => {
+        let button =
+          typeof item === "string"
+            ? {
+                entityId: item
+              }
+            : {
+                entityId: item.entity,
+                icon: item.icon,
+                stateIcons: item.state_icons,
+                style: this._getStyle(item.style),
+                name: item.name,
+                service: item.service,
+                serviceData: item.service_data
+              }
+
+        if (!button.service) {
+          button = { ...button, ...this._withDefaultEntityService(button.entityId) }
+        }
+
+        if (Array.isArray(button.serviceData)) {
+          button.serviceData = this._mergeArrayItemsToObject(button.serviceData)
+        }
+
+        if (Array.isArray(button.stateIcons)) {
+          button.stateIcons = this._mergeArrayItemsToObject(button.stateIcons)
+        }
+
+        return button
+      })
+    )
   }
 
-  getClass(state) {
-    switch (state) {
-      case "on":
-        return "button-active"
-      case "off":
-        return "button-inactive"
-      default:
-        return "button-default"
-    }
-  }
-
-  withDefaultEntityService(entityId) {
+  _withDefaultEntityService(entityId) {
     const domain = entityId.split(".")[0]
     let service
     switch (domain) {
@@ -109,7 +133,8 @@ class ButtonEntityRow extends LitElement {
         service = "turn_on"
         break
       default:
-        throw new Error(`service required, but was not found for ${entityId}`)
+        // No service available, will open the entity state modal if any
+        return {}
     }
 
     return {
@@ -120,7 +145,35 @@ class ButtonEntityRow extends LitElement {
     }
   }
 
-  getStyle(styles) {
+  _getCurrentIcon(button, state) {
+    let icon = button.icon
+    if (state.attributes) {
+      if (button.stateIcons && button.stateIcons[state.state]) {
+        icon = button.stateIcons[state.state]
+      }
+      if (!icon) {
+        icon = state.attributes.icon
+      }
+    }
+    return icon
+  }
+
+  _getCurrentClass(state) {
+    switch (state) {
+      case "on":
+        return "button-active"
+      case "off":
+        return "button-inactive"
+      default:
+        return "button-default"
+    }
+  }
+
+  _getStyle(styles) {
+    if (Array.isArray(styles)) {
+      styles = this._mergeArrayItemsToObject(styles)
+    }
+
     return Object.keys(styles || {})
       .reduce((style, rule) => {
         return [...style, `${rule}: ${styles[rule]};`]
@@ -128,50 +181,23 @@ class ButtonEntityRow extends LitElement {
       .join(" ")
   }
 
-  setConfig(config) {
-    if (!config.buttons) throw new Error("missing buttons")
-    if (!Array.isArray(config.buttons)) throw new Error("buttons must be an array")
-    if (config.buttons.length <= 0) throw new Error("at least one button required")
-
-    this.config = config
-    this.buttons = config.buttons.map(item => {
-      let button
-      if (typeof item === "string") {
-        button = {
-          entityId: item
-        }
-      } else if (item.entity) {
-        button = {
-          entityId: item.entity,
-          icon: item.icon,
-          stateIcons: item.state_icons,
-          style: item.style,
-          name: item.name,
-          service: item.service,
-          serviceData: item.service_data
-        }
-      } else {
-        throw new Error("button config is not supported")
-      }
-
-      if (!button.service) {
-        button = { ...button, ...this.withDefaultEntityService(button.entityId) }
-      }
-
-      if (Array.isArray(button.serviceData)) {
-        button.serviceData = button.serviceData.reduce((obj, item) => ({ ...obj, ...item }), {})
-      }
-
-      if (button.serviceData === null || typeof button.serviceData !== "object")
-        throw new Error("serviceData must be an object")
-
-      return button
-    })
+  _mergeArrayItemsToObject(arrayOfObjects) {
+    return arrayOfObjects.reduce((obj, item) => ({ ...obj, ...item }), {})
   }
 
-  handleButtonClick(button) {
-    const service = button.service.split(".")
-    this.hass.callService(service[0], service[1], button.serviceData)
+  _handleButtonClick(button) {
+    if (button.service) {
+      const service = button.service.split(".")
+      this.hass.callService(service[0], service[1], button.serviceData)
+    } else if (button.entityId) {
+      this._showEntityMoreInfo(button.entityId)
+    }
+  }
+
+  _showEntityMoreInfo(entityId) {
+    const event = new Event("hass-more-info", { bubbles: true, cancelable: false, composed: true })
+    event.detail = { entityId }
+    this.dispatchEvent(event)
   }
 }
 

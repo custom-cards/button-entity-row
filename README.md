@@ -158,7 +158,7 @@ entities:
 ```yaml
 resources:
   - url: /local/custom-lovelace/button-entity-row/button-entity-row.js?v=0.0.1
-    type: module
+    type: js
 
 views:
   - title: Home
@@ -192,7 +192,7 @@ You can also specify multiple rows of buttons
 ```yaml
 resources:
   - url: /local/custom-lovelace/button-entity-row/button-entity-row.js?v=0.0.1
-    type: module
+    type: js
 
 views:
   - title: Home
@@ -204,10 +204,8 @@ views:
         entities:
           - type: "custom:button-entity-row"
             buttons:
-              - switch.light_1
-              - switch.light_2
-          - type: "custom:button-entity-row"
-            buttons:
-              - media_player.roku
-              - light.lamp
+              - - switch.light_1
+                - switch.light_2
+              - - media_player.roku
+                - light.lamp
 ```
