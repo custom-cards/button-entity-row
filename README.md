@@ -158,7 +158,7 @@ the "more-info" modal of the entity will be shown instead (if any).
 ```yaml
 resources:
   - url: /local/button-entity-row.js
-    type: js
+    type: module
 
 views:
   - title: Home
@@ -192,7 +192,7 @@ You can also specify multiple rows of buttons
 ```yaml
 resources:
   - url: /local/button-entity-row.js
-    type: js
+    type: module
 
 views:
   - title: Home
