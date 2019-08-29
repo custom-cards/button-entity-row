@@ -149,6 +149,10 @@ entities:
 | media_player  | media_player.media_play_pause |
 | scene         | scene.turn_on                 |
 
+If no `service` is specified for a given button,
+and there is no default value corresponding to its specific domain (eg.: `binary_sensor`),
+the "more-info" modal of the entity will be shown instead (if any).
+
 ## Full Configuration Example
 
 ```yaml
