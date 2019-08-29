@@ -1,7 +1,3 @@
-_Forked from [custom-cards/button-entity-row](https://github.com/custom-cards/button-entity-row)._
-
-This implementation simplify the code and removes some edge cases.
-
 # Button Entity Row
 
 Creates a row of buttons to be placed in an `entities` card.
@@ -157,7 +153,7 @@ entities:
 
 ```yaml
 resources:
-  - url: /local/custom-lovelace/button-entity-row/button-entity-row.js?v=0.0.1
+  - url: /local/button-entity-row.js
     type: js
 
 views:
@@ -191,7 +187,7 @@ You can also specify multiple rows of buttons
 
 ```yaml
 resources:
-  - url: /local/custom-lovelace/button-entity-row/button-entity-row.js?v=0.0.1
+  - url: /local/button-entity-row.js
     type: js
 
 views:
