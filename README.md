@@ -18,7 +18,8 @@ Creates a row of buttons to be placed in an `entities` card.
 | entity       | `string`                    | **Optional** | The entity_id of the entity you want to show.                  |
 | name         | `string`                    | **Optional** | Name to use for entity.                                        |
 | icon         | `string`                    | **Optional** | Material design icon to display.                               |
-| state_icons  | `{[state: string]: string}` | **Optional** | Material icon for each specific state of the entity            |
+| state_icons  | `{[state: string]: string}` | **Optional** | Material icon for each specific state of the entity.           |
+| state_styles | `{[state: string]: string}` | **Optional** | CSS styles to apply to the button for a specific state.        |
 | style        | `object`                    | **Optional** | CSS styles to apply to the button.                             |
 | service      | `string`                    | **Optional** | The Home Assistant service to call when the button is clicked. |
 | service_data | `object`                    | **Optional** | Service data to be sent with the service call.                 |
@@ -62,7 +63,7 @@ entities:
         icon: "mdi:pause"
         name: 1 hour
         style:
-          - color: var(--paper-item-icon-color)
+          - color: var(--primary-color)
       - entity: input_boolean.kitchen_motion_sensor
         name: Detect motion
         state_icons:
@@ -134,6 +135,35 @@ entities:
           - color: white
 ```
 
+---
+
+#### Using custom styles/icons, specific to the state:
+
+![example3](examples/example-5.gif)
+
+```yaml
+type: entities
+entities:
+  - entity: switch.entrance
+
+  - type: "custom:button-entity-row"
+    buttons:
+      - entity: input_boolean.alarm
+        name: Alarm System
+        style:
+          background: lightgray
+          border-radius: 9999px
+        state_icons:
+          "off": "mdi:shield-home"
+          "on": "mdi:lock-open"
+        state_styles:
+          "off":
+            color: red
+            font-weight: bold
+          "on":
+            color: green
+```
+
 ## Default Entities Map to Services
 
 | Domain        | Service                       |
@@ -153,7 +183,7 @@ If no `service` is specified for a given button,
 and there is no default value corresponding to its specific domain (eg.: `binary_sensor`),
 the "more-info" modal of the entity will be shown instead (if any).
 
-## Full Configuration Example
+## Full Configuration Examples
 
 ```yaml
 resources:
@@ -172,7 +202,8 @@ views:
             buttons:
               # full configuration example
               - icon: mdi:lightbulb-on
-                icon_color: yellow
+                style:
+                  color: yellow
                 name: "On"
                 service: scene.turn_on
                 service_data:

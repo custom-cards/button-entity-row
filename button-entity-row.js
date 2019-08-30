@@ -26,7 +26,7 @@ class ButtonEntityRow extends LitElement {
         align-items: center;
       }
       .button-default {
-        color: var(--paper-item-icon-color); /*var(--primary-color); */
+        color: var(--paper-item-icon-color);
       }
       .button-active {
         color: var(--paper-item-icon-active-color);
@@ -43,15 +43,17 @@ class ButtonEntityRow extends LitElement {
         return html`
           <div class="flex-box">
             ${row.map(button => {
-              const state = this.hass.states[button.entityId] || {}
-              const icon = this._getCurrentIcon(button, state)
-              const name = button.name || (!icon && state.attributes ? state.attributes.friendly_name : null)
+              const entityState = this.hass.states[button.entityId] || {}
+              const icon = this._getCurrentIcon(button, entityState)
+              const style = this._getCurrentStyle(button, entityState)
+              const name =
+                button.name || (!icon && entityState.attributes ? entityState.attributes.friendly_name : null)
 
               return html`
                 <paper-button
                   @click="${() => this._handleButtonClick(button)}"
-                  style="${button.style}"
-                  class="${this._getCurrentClass(state.state)}"
+                  style="${style}"
+                  class="${this._getCurrentClass(entityState)}"
                 >
                   ${icon &&
                     html`
@@ -83,13 +85,21 @@ class ButtonEntityRow extends LitElement {
         let button =
           typeof item === "string"
             ? {
-                entityId: item
+                entityId: item,
+                icon: undefined,
+                stateIcons: undefined,
+                stateStyles: undefined,
+                style: undefined,
+                name: undefined,
+                service: undefined,
+                serviceData: undefined
               }
             : {
                 entityId: item.entity,
                 icon: item.icon,
                 stateIcons: item.state_icons,
-                style: this._getStyle(item.style),
+                stateStyles: item.state_styles,
+                style: item.style,
                 name: item.name,
                 service: item.service,
                 serviceData: item.service_data
@@ -99,13 +109,8 @@ class ButtonEntityRow extends LitElement {
           button = { ...button, ...this._withDefaultEntityService(button.entityId) }
         }
 
-        if (Array.isArray(button.serviceData)) {
-          button.serviceData = this._mergeArrayItemsToObject(button.serviceData)
-        }
-
-        if (Array.isArray(button.stateIcons)) {
-          button.stateIcons = this._mergeArrayItemsToObject(button.stateIcons)
-        }
+        button.serviceData = this._getObjectData(button.serviceData)
+        button.stateIcons = this._getObjectData(button.stateIcons)
 
         return button
       })
@@ -134,7 +139,10 @@ class ButtonEntityRow extends LitElement {
         break
       default:
         // No service available, will open the entity state modal if any
-        return {}
+        return {
+          service: undefined,
+          serviceData: undefined
+        }
     }
 
     return {
@@ -145,21 +153,34 @@ class ButtonEntityRow extends LitElement {
     }
   }
 
-  _getCurrentIcon(button, state) {
+  _getCurrentIcon(button, entityState) {
     let icon = button.icon
-    if (state.attributes) {
-      if (button.stateIcons && button.stateIcons[state.state]) {
-        icon = button.stateIcons[state.state]
-      }
-      if (!icon) {
-        icon = state.attributes.icon
-      }
+
+    if (button.stateIcons && button.stateIcons[entityState.state]) {
+      icon = button.stateIcons[entityState.state]
     }
+    if (!icon && entityState.attributes && entityState.attributes.icon) {
+      icon = entityState.attributes.icon
+    }
+
     return icon
   }
 
-  _getCurrentClass(state) {
-    switch (state) {
+  _getCurrentStyle(button, entityState) {
+    const mergedStyle = {
+      ...this._getObjectData(button.style || {}),
+      ...this._getObjectData((button.stateStyles && button.stateStyles[entityState.state]) || {})
+    }
+
+    return Object.keys(mergedStyle)
+      .reduce((style, rule) => {
+        return [...style, `${rule}: ${mergedStyle[rule]};`]
+      }, [])
+      .join(" ")
+  }
+
+  _getCurrentClass(entityState) {
+    switch (entityState.state) {
       case "on":
         return "button-active"
       case "off":
@@ -169,20 +190,12 @@ class ButtonEntityRow extends LitElement {
     }
   }
 
-  _getStyle(styles) {
-    if (Array.isArray(styles)) {
-      styles = this._mergeArrayItemsToObject(styles)
-    }
-
-    return Object.keys(styles || {})
-      .reduce((style, rule) => {
-        return [...style, `${rule}: ${styles[rule]};`]
-      }, [])
-      .join(" ")
-  }
-
   _mergeArrayItemsToObject(arrayOfObjects) {
     return arrayOfObjects.reduce((obj, item) => ({ ...obj, ...item }), {})
+  }
+
+  _getObjectData(data = {}) {
+    return Array.isArray(data) ? this._mergeArrayItemsToObject(data) : data
   }
 
   _handleButtonClick(button) {
