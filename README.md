@@ -13,16 +13,18 @@ Creates a row of buttons to be placed in an `entities` card.
 
 ## `Button` Object
 
-| Name         | Type                        | Requirement  | Description                                                    |
-| ------------ | --------------------------- | ------------ | -------------------------------------------------------------- |
-| entity       | `string`                    | **Optional** | The entity_id of the entity you want to show.                  |
-| name         | `string`                    | **Optional** | Name to use for entity.                                        |
-| icon         | `string`                    | **Optional** | Material design icon to display.                               |
-| state_icons  | `{[state: string]: string}` | **Optional** | Material icon for each specific state of the entity.           |
-| state_styles | `{[state: string]: string}` | **Optional** | CSS styles to apply to the button for a specific state.        |
-| style        | `object`                    | **Optional** | CSS styles to apply to the button.                             |
-| service      | `string`                    | **Optional** | The Home Assistant service to call when the button is clicked. |
-| service_data | `object`                    | **Optional** | Service data to be sent with the service call.                 |
+| Name               | Type                        | Requirement  | Description                                                    |
+| -----------------  | --------------------------- | ------------ | -------------------------------------------------------------- |
+| entity             | `string`                    | **Optional** | The entity_id of the entity you want to show.                  |
+| name               | `string`                    | **Optional** | Name to use for entity.                                        |
+| icon               | `string`                    | **Optional** | Material design icon to display.                               |
+| state_icons        | `{[state: string]: string}` | **Optional** | Material icon for each specific state of the entity.           |
+| state_styles       | `{[state: string]: string}` | **Optional** | CSS styles to apply to the button for a specific state.        |
+| state\_icon_styles | `{[state: string]: string}` | **Optional** | CSS styles to apply to the icon for a specific state.          |
+| style              | `object`                    | **Optional** | CSS styles to apply to the button.                             |
+| icon_style         | `object`                    | **Optional** | CSS styles to apply to the icon.                               |
+| service            | `string`                    | **Optional** | The Home Assistant service to call when the button is clicked. |
+| service_data       | `object`                    | **Optional** | Service data to be sent with the service call.                 |
 
 ## Usage
 
