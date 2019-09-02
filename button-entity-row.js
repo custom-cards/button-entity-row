@@ -86,21 +86,25 @@ class ButtonEntityRow extends LitElement {
         let button =
           typeof item === "string"
             ? {
-                entityId: item,
-                icon: undefined,
-                stateIcons: undefined,
-                stateStyles: undefined,
-                style: undefined,
-                name: undefined,
-                service: undefined,
-                serviceData: undefined
+              entityId: item,
+              icon: undefined,
+              stateIcons: undefined,
+              stateStyles: undefined,
+              stateIconStyles: undefined,
+              style: undefined,
+              iconStyle: undefined,
+              name: undefined,
+              service: undefined,
+              serviceData: undefined
               }
             : {
                 entityId: item.entity,
                 icon: item.icon,
                 stateIcons: item.state_icons,
                 stateStyles: item.state_styles,
+                stateIconStyles: item.state_icon_styles,
                 style: item.style,
+                iconStyle: item.icon_style,
                 name: item.name,
                 service: item.service,
                 serviceData: item.service_data
@@ -183,7 +187,7 @@ class ButtonEntityRow extends LitElement {
   _getCurrentIconStyle(button, entityState) {
     const mergedStyle = {
       ...this._getObjectData(button.iconStyle || {}),
-      ...this._getObjectData((button.stateIconStyles && button.stateIconStyles[entityState.state]) || {})
+      ...this._getObjectData((button.stateIconStyles && button.stateStyles[entityState.state]) || {})
     }
 
     return Object.keys(mergedStyle)
