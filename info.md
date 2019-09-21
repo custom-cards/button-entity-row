@@ -16,10 +16,3 @@
 * Create multiple rows of buttons.
 * Supports styling on/off state for entities.
 
-## Usage
-
-```yaml
-resources:
-  - url: /local/button-entity-row.js
-    type: module
-```

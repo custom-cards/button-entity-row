@@ -34,7 +34,7 @@ You can specify directly an entity name or use the [`Button`](#button-object) ob
 
 ```yaml
 resources:
-  - url: /local/button-entity-row.js
+  - url: /community_plugin/button-entity-row/button-entity-row.js
     type: module
 ```
 
@@ -197,7 +197,7 @@ the "more-info" modal of the entity will be shown instead (if any).
 
 ```yaml
 resources:
-  - url: /local/button-entity-row.js
+  - url: /community_plugin/button-entity-row/button-entity-row.js
     type: module
 
 views:
@@ -232,7 +232,7 @@ You can also specify multiple rows of buttons
 
 ```yaml
 resources:
-  - url: /local/button-entity-row.js
+  - url: /community_plugin/button-entity-row/button-entity-row.js
     type: module
 
 views:
