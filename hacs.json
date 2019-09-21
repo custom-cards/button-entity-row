@@ -1,0 +1,18 @@
+{
+  "name": "Button Entity Row",
+  "content_in_root": true,
+  "filename": "button-entity-row.js",
+  "domains": [
+    "automation",
+    "cover",
+    "fan",
+    "input_boolean",
+    "light",
+    "script",
+    "switch",
+    "vacuum",
+    "media_player",
+    "scene"
+  ],
+  "homeassistant": "0.99.2"
+}
