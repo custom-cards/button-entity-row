@@ -36,6 +36,9 @@ class ButtonEntityRow extends LitElement {
       .button-inactive {
         color: var(--paper-item-icon-color);
       }
+      .button-unavailable {
+        color: var(--state-icon-unavailable-color);
+      }
     `
   }
 
@@ -205,6 +208,8 @@ class ButtonEntityRow extends LitElement {
         return "button-active"
       case "off":
         return "button-inactive"
+      case "unavailable":
+        return "button-unavailable"
       default:
         return "button-default"
     }
