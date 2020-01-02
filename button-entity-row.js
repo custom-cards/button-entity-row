@@ -227,11 +227,17 @@ class ButtonEntityRow extends LitElement {
     if (button.service) {
       const service = button.service.split(".")
       this.hass.callService(service[0], service[1], button.serviceData)
+      this._forwardHaptic("light")
     } else if (button.entityId) {
       this._showEntityMoreInfo(button.entityId)
     }
   }
 
+  _forwardHaptic(hapticType) {
+    const event = new Event("haptic", { bubbles: true, cancelable: false, composed: true })
+    event.detail = hapticType
+    this.dispatchEvent(event)
+  }
   _showEntityMoreInfo(entityId) {
     const event = new Event("hass-more-info", { bubbles: true, cancelable: false, composed: true })
     event.detail = { entityId }
