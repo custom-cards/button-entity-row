@@ -77,6 +77,7 @@ class ButtonEntityRow extends LitElement {
   }
 
   setConfig(config) {
+    config = JSON.parse(JSON.stringify(config))
     if (!config.buttons) throw new Error("missing buttons")
     if (!Array.isArray(config.buttons)) throw new Error("buttons must be an array")
     if (config.buttons.length <= 0) throw new Error("at least one button required")
