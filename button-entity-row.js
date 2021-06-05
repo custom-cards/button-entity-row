@@ -193,7 +193,7 @@ class ButtonEntityRow extends LitElement {
   _getCurrentIconStyle(button, entityState) {
     const mergedStyle = {
       ...this._getObjectData(button.iconStyle || {}),
-      ...this._getObjectData((button.stateIconStyles && button.stateStyles[entityState.state]) || {})
+      ...this._getObjectData((button.stateIconStyles && button.stateIconStyles[entityState.state]) || {})
     }
 
     return Object.keys(mergedStyle)
