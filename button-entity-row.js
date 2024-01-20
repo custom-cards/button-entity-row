@@ -1,6 +1,8 @@
-const LitElement = Object.getPrototypeOf(customElements.get("hui-view"))
-const html = LitElement.prototype.html
-const css = LitElement.prototype.css
+import {
+  LitElement,
+  html,
+  css,
+} from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
 
 class ButtonEntityRow extends LitElement {
   static get properties() {
